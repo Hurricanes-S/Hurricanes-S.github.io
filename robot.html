@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新型智能切菜机器人</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        accent: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F7F8FA'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .section-padding {
+                padding: clamp(3rem, 8vw, 6rem) 0;
+            }
+            .nav-link {
+                position: relative;
+            }
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -4px;
+                left: 0;
+                background-color: theme('colors.primary');
+                transition: width 0.3s ease;
+            }
+            .nav-link:hover::after {
+                width: 100%;
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+                100% { transform: translateY(0px); }
+            }
+            .progress-bar {
+                transition: width 1.5s ease-in-out;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-dark bg-light">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <i class="fa fa-cutlery text-primary text-2xl mr-2"></i>
+                        <span class="text-xl md:text-2xl font-bold text-dark">智能切菜机器人</span>
+                    </a>
+                </div>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#overview" class="nav-link text-dark hover:text-primary font-medium">项目概述</a>
+                    <a href="#features" class="nav-link text-dark hover:text-primary font-medium">机器人特点</a>
+                    <a href="#plan" class="nav-link text-dark hover:text-primary font-medium">后续计划</a>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-dark focus:outline-none">
+                        <i class="fa fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="#overview" class="block text-dark hover:text-primary font-medium py-2">项目概述</a>
+                <a href="#features" class="block text-dark hover:text-primary font-medium py-2">机器人特点</a>
+                <a href="#plan" class="block text-dark hover:text-primary font-medium py-2">后续计划</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="pt-24 md:pt-32 pb-16 md:pb-24 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark leading-tight mb-6">
+                        新型智能切菜机器人<br>
+                        <span class="text-primary">重新定义厨房烹饪体验</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-lg">
+                        结合人工智能与精密机械设计，为现代厨房提供高效、安全、智能的食材处理解决方案，让烹饪变得更加简单有趣。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#features" class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center">
+                            了解特点 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#demo" class="bg-white hover:bg-gray-50 text-primary border border-primary font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                            <i class="fa fa-play-circle mr-2"></i> 观看演示
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative">
+                    <div class="relative z-10 animate-float">
+                        <img src="photo/1.png" alt="智能切菜机器人" class="w-full h-auto rounded-2xl shadow-2xl">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-accent/20 rounded-full blur-3xl -z-10"></div>
+                    <div class="absolute -top-6 -left-6 w-24 h-24 bg-primary/20 rounded-full blur-3xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目概述 -->
+    <section id="overview" class="section-padding bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-4">项目概述</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    顺应智能制造技术发展趋势，致力于打造新一代智能厨房设备，推动食品加工行业升级
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-dark mb-6">项目背景与意义</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                <i class="fa fa-briefcase text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-700">2024年工信部专项拨款中，有2.3亿元用于厨房机器人核心部件（如高精度伺服电机）的攻关。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                <i class="fa fa-file-text text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-700">2023年3月，国家卫生健康委员会印发《食品安全国家标准 食品生产通用卫生规范》。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                <i class="fa fa-industry text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-700">2024年6月，工业和信息化部印发《关于推动轻工业高质量发展的指导意见》。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                <i class="fa fa-line-chart text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-700">食品加工设备在国民经济中的地位持续提升，2024年行业产值预计突破6500亿元，年复合增长率达6.8%。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="photo/图片1.png" alt="项目背景" class="w-full h-auto rounded-2xl shadow-xl">
+                    <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg max-w-xs">
+                        <h4 class="font-bold text-dark mb-2">行业发展趋势</h4>
+                        <p class="text-sm text-gray-600">2025年消费升级、食品安全法规趋严及智能制造技术的渗透，行业将迎来结构性变革。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-20 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 md:p-12">
+                <h3 class="text-2xl font-bold text-dark mb-8 text-center">项目目标与预期成果</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-cogs text-primary text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-dark mb-3">技术突破</h4>
+                        <p class="text-gray-600">实现高精度食材切割控制，研发智能化识别系统，提升厨房机器人核心性能。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-shield text-primary text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-dark mb-3">安全标准</h4>
+                        <p class="text-gray-600">建立行业领先的安全防护体系，确保设备在家庭和商用环境中的安全使用。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-rocket text-primary text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-dark mb-3">产业应用</h4>
+                        <p class="text-gray-600">推动智能切菜机器人在家庭和餐饮行业的广泛应用，促进行业技术升级。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 机器人特点 -->
+    <section id="features" class="section-padding bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-4">机器人特点</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    融合多项创新技术，打造功能全面、安全可靠的智能切菜解决方案
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 特点1：固定食材 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-primary/10 flex items-center justify-center">
+                        <i class="fa fa-thumbtack text-5xl text-primary"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-3">固定食材</h3>
+                        <p class="text-gray-600 mb-4">
+                            刀头由机械臂精确控制，可改变三维坐标实现精细切割；切割区与固定区分离设计，确保食材稳定。
+                        </p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-start">
+                                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                <span>机械臂控制三维坐标切割</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                <span>切割区与固定区分开设计</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                <span>硅胶材质贴合食材增强固定</span>
+                            </li>
+                        </ul>
+                        <img src="photo/2.png" alt="食材固定系统" class="w-full h-auto rounded-lg">
+                    </div>
+                </div>
+                
+                <!-- 特点2：食材识别 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-primary/10 flex items-center justify-center">
+                        <i class="fa fa-eye text-5xl text-primary"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-3">食材识别</h3>
+                        <p class="text-gray-600 mb-4">
+                            采用先进的YOLOv5模型进行食材识别，精准区分不同种类和状态的食材，为智能切割提供数据支持。
+                        </p>
+                         <img src="photo/3.png" alt="食材识别系统" class="w-full h-auto rounded-lg">
+                        <p class="text-sm text-gray-500 italic">注：图示为识别训练结果</p>
+                        <img src="photo/results.png" alt="食材识别系统" class="w-full h-auto rounded-lg">
+                    </div>
+                </div>
+                
+                <!-- 特点3：安全性 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-primary/10 flex items-center justify-center">
+                        <i class="fa fa-lock text-5xl text-primary"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-3">安全性</h3>
+                        <p class="text-gray-600 mb-4">
+                            多重安全设计保障使用安全，PC盖板阻隔紫外线并防止接触内部机械，刀具存储系统可锁定防止儿童接触。
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <h4 class="font-medium text-dark mb-1">PC盖板</h4>
+                                <p class="text-sm text-gray-600">阻隔紫外线，防止接触内部机械</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <h4 class="font-medium text-dark mb-1">刀具存储</h4>
+                                <p class="text-sm text-gray-600">刀架存放备用刀具，可锁定防儿童接触</p>
+                            </div>
+                        </div>
+                        <img src="photo/4.png" alt="安全防护系统" class="w-full h-auto rounded-lg">
+                    </div>
+                </div>
+                
+                <!-- 特点4：清洁与消毒 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-primary/10 flex items-center justify-center">
+                        <i class="fa fa-tint text-5xl text-primary"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-3">清洁与消毒</h3>
+                        <p class="text-gray-600 mb-4">
+                            整机防水设计配合高效排水系统，确保设备清洁方便；轨道高位设计防止污垢藏匿，保持卫生环境。
+                        </p>
+                        <div class="mb-6">
+                            <div class="flex items-center mb-2">
+                                <span class="w-1/3 text-gray-700">防水设计</span>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 ml-2">
+                                    <div class="bg-primary h-2.5 rounded-full progress-bar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <span class="w-1/3 text-gray-700">排水系统</span>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 ml-2">
+                                    <div class="bg-primary h-2.5 rounded-full progress-bar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-1/3 text-gray-700">防藏垢设计</span>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 ml-2">
+                                    <div class="bg-primary h-2.5 rounded-full progress-bar" style="width: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="https://picsum.photos/id/306/400/250" alt="清洁消毒系统" class="w-full h-auto rounded-lg">
+                    </div>
+                </div>
+                
+                <!-- 特点5：附加功能 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-primary/10 flex items-center justify-center">
+                        <i class="fa fa-lightbulb-o text-5xl text-primary"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-3">附加功能</h3>
+                        <p class="text-gray-600 mb-4">
+                            不仅是切菜工具，更是您的厨房智能助手，提供食材营养分析和个性化菜谱推荐服务。
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-primary/5 p-4 rounded-lg">
+                                <h4 class="font-bold text-primary mb-2 flex items-center">
+                                    <i class="fa fa-line-chart mr-2"></i> 营养分析
+                                </h4>
+                                <p class="text-sm text-gray-600">显示食材营养素及健康建议，帮助您合理搭配饮食</p>
+                            </div>
+                            <div class="bg-primary/5 p-4 rounded-lg">
+                                <h4 class="font-bold text-primary mb-2 flex items-center">
+                                    <i class="fa fa-book mr-2"></i> 菜谱推荐
+                                </h4>
+                                <p class="text-sm text-gray-600">根据识别的食材智能推荐合适菜谱，让烹饪更简单</p>
+                            </div>
+                        </div>
+                        <img src="https://picsum.photos/id/431/400/250" alt="附加功能界面" class="w-full h-auto rounded-lg">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技术优势对比 -->
+            <div class="mt-20 bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-8 md:p-12">
+                    <h3 class="text-2xl font-bold text-dark mb-8 text-center">与传统切菜设备对比</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-max">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="py-4 px-6 text-left font-bold text-dark">对比项目</th>
+                                    <th class="py-4 px-6 text-center font-bold text-dark">智能切菜机器人</th>
+                                    <th class="py-4 px-6 text-center font-bold text-dark">传统切菜机</th>
+                                    <th class="py-4 px-6 text-center font-bold text-dark">手工切菜</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">食材识别</td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-check text-primary"></i></td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-times text-gray-400"></i></td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-times text-gray-400"></i></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">切割精度</td>
+                                    <td class="py-4 px-6 text-center">±0.5mm</td>
+                                    <td class="py-4 px-6 text-center">±2mm</td>
+                                    <td class="py-4 px-6 text-center">±3-5mm</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">安全性</td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-shield text-primary"></i></td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-exclamation-triangle text-yellow-500"></i></td>
+                                    <td class="py-4 px-6 text-center"><i class="fa fa-exclamation-circle text-red-500"></i></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">清洁难度</td>
+                                    <td class="py-4 px-6 text-center">低</td>
+                                    <td class="py-4 px-6 text-center">中</td>
+                                    <td class="py-4 px-6 text-center">高</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">智能功能</td>
+                                    <td class="py-4 px-6 text-center">营养分析/菜谱推荐</td>
+                                    <td class="py-4 px-6 text-center">无</td>
+                                    <td class="py-4 px-6 text-center">无</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-6 text-gray-700">效率</td>
+                                    <td class="py-4 px-6 text-center">高效</td>
+                                    <td class="py-4 px-6 text-center">中等</td>
+                                    <td class="py-4 px-6 text-center">低</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 演示视频 -->
+    <section id="demo" class="section-padding bg-gradient-to-br from-primary to-primary/80 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold mb-4">功能演示</h2>
+                <div class="w-20 h-1 bg-white mx-auto mb-6"></div>
+                <p class="text-lg opacity-90 max-w-2xl mx-auto">
+                    观看智能切菜机器人实际操作演示，了解其高效精准的切割能力和智能交互体验
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl relative">
+                <div class="aspect-video bg-black flex items-center justify-center">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w-20 h-20 bg-primary/90 hover:bg-primary rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110">
+                        <i class="fa fa-play text-2xl"></i>
+                    </a>
+                    <img src="https://picsum.photos/id/1/800/450" alt="演示视频封面" class="w-full h-full object-cover opacity-70">
+                </div>
+                <div class="p-6 md:p-8 bg-white">
+                    <h3 class="text-xl font-bold text-dark mb-2">智能切菜机器人操作演示</h3>
+                    <p class="text-gray-600 mb-4">
+                        本视频展示了机器人从食材识别、固定到精准切割的全过程，以及营养分析和菜谱推荐功能的实际应用。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">食材识别</span>
+                        <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">精准切割</span>
+                        <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">营养分析</span>
+                        <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">菜谱推荐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 后续计划 -->
+    <section id="plan" class="section-padding bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-4">后续计划</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    持续优化产品性能，拓展功能应用，为用户带来更完善的智能厨房体验
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-50 rounded-2xl p-6 text-center card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-cube text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-2">固定食材建模</h3>
+                    <p class="text-gray-600">优化固定系统设计，提升不同形状食材的固定效果</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-6 text-center card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-cutlery text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-2">刀具刀架建模</h3>
+                    <p class="text-gray-600">设计更合理的刀具存储系统，提升安全性和便利性</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-6 text-center card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-video-camera text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-2">摄像头建模</h3>
+                    <p class="text-gray-600">优化摄像头布局，提升食材识别精度和系统响应速度</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-6 text-center card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-balance-scale text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-2">压力传感器建模</h3>
+                    <p class="text-gray-600">在案板加装压力传感器，实现更精准的切割力度控制</p>
+                </div>
+            </div>
+            
+            <div class="mt-20 bg-primary/5 rounded-2xl p-8 md:p-12">
+                <h3 class="text-2xl font-bold text-dark mb-8 text-center">技术路线图</h3>
+                <div class="relative">
+                    <!-- 时间线 -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary/20"></div>
+                    
+                    <!-- 节点1 -->
+                    <div class="flex flex-col md:flex-row items-center mb-16 relative">
+                        <div class="order-2 md:order-1 w-1/2 md:pr-12 text-right md:text-left">
+                            <h4 class="text-xl font-bold text-dark mb-2">2025年Q2</h4>
+                            <p class="text-gray-600">完成固定食材系统和刀具存储系统的详细设计，开展初步建模工作</p>
+                        </div>
+                        <div class="order-1 md:order-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center z-10 mt-4 md:mt-0">
+                            <i class="fa fa-microchip text-white"></i>
+                        </div>
+                        <div class="order-3 md:order-3 w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+                    
+                    <!-- 节点2 -->
+                    <div class="flex flex-col md:flex-row items-center mb-16 relative">
+                        <div class="order-2 md:order-1 w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="order-1                        <div class="order-1 md:order-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center z-10 mt-4 md:mt-0">
+                            <i class="fa fa-camera text-white"></i>
+                        </div>
+                        <div class="order-3 md:order-3 w-1/2 md:pl-12 text-left">
+                            <h4 class="text-xl font-bold text-dark mb-2">2025年Q3</h4>
+                            <p class="text-gray-600">完成摄像头系统设计与建模，开展食材识别算法优化和压力传感器集成</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 节点3 -->
+                    <div class="flex flex-col md:flex-row items-center mb-16 relative">
+                        <div class="order-2 md:order-1 w-1/2 md:pr-12 text-right md:text-left">
+                            <h4 class="text-xl font-bold text-dark mb-2">2025年Q4</h4>
+                            <p class="text-gray-600">进行系统集成测试，优化用户交互界面，开展小批量样机生产</p>
+                        </div>
+                        <div class="order-1 md:order-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center z-10 mt-4 md:mt-0">
+                            <i class="fa fa-cogs text-white"></i>
+                        </div>
+                        <div class="order-3 md:order-3 w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+                    
+                    <!-- 节点4 -->
+                    <div class="flex flex-col md:flex-row items-center relative">
+                        <div class="order-2 md:order-1 w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="order-1 md:order-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center z-10 mt-4 md:mt-0">
+                            <i class="fa fa-rocket text-white"></i>
+                        </div>
+                        <div class="order-3 md:order-3 w-1/2 md:pl-12 text-left">
+                            <h4 class="text-xl font-bold text-dark mb-2">2026年Q1</h4>
+                            <p class="text-gray-600">开展市场试点应用，收集用户反馈，进行产品迭代优化，准备批量生产</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- 登录表单容器 -->
+<div class="section-padding bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto">
+      <!-- 登录卡片 -->
+      <div class="bg-white p-8 rounded-lg shadow-lg">
+        <!-- 表单标题 -->
+        <h2 class="text-2xl font-bold text-center mb-6">用户登录</h2>
+        
+        <!-- 登录表单 -->
+        <form>
+          <!-- 用户名输入 -->
+          <div class="mb-4">
+            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">用户名</label>
+            <input type="text" id="username" 
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                   placeholder="请输入用户名">
+          </div>
+          
+          <!-- 密码输入 -->
+          <div class="mb-6">
+            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">密码</label>
+            <input type="password" id="password" 
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                   placeholder="请输入密码">
+          </div>
+          
+          <!-- 登录按钮 -->
+          <div class="flex items-center justify-between mb-6">
+            <button 
+              class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full" 
+              type="button">
+              登录
+            </button>
+          </div>
+          
+          <!-- 记住我 & 忘记密码 -->
+          <div class="flex items-center justify-between mb-6 max-w-md mx-auto">
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded">
+              <span class="ml-2 text-gray-600">记住账号</span>
+            </label>
+            <a href="#" class="text-primary hover:text-primary/90 text-sm">忘记密码？</a>
+          </div>
+          
+          <!-- 第三方登录 -->
+          <div class="mt-6 max-w-md mx-auto">
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-white text-gray-500">或使用社交账号登录</span>
+              </div>
+            </div>
+            
+            <div class="mt-6 grid grid-cols-3 gap-3">
+              <div>
+                <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                  <i class="fa fa-weixin text-xl"></i>
+                </a>
+              </div>
+              <div>
+                <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                  <i class="fa fa-qq text-xl"></i>
+                </a>
+              </div>
+              <div>
+                <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                  <i class="fa fa-weibo text-xl"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- 联系我们 -->
+    <section class="section-padding bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-6">联系我们</h2>
+                        <p class="text-lg text-gray-600 mb-8">
+                            如果你对智能切菜机器人项目感兴趣，或者有任何问题和建议，欢迎随时与我们联系。
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa fa-map-marker text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-dark mb-1">公司地址</h3>
+                                    <p class="text-gray-600">北京市海淀区中关村科技园区创新大厦A座15层</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa fa-phone text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-dark mb-1">联系电话</h3>
+                                    <p class="text-gray-600">+86 10 8888 7777</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa fa-envelope text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-dark mb-1">电子邮箱</h3>
+                                    <p class="text-gray-600">contact@smartcuttingrobot.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex space-x-4">
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-colors">
+                                <i class="fa fa-weixin"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-colors">
+                                <i class="fa fa-weibo"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-colors">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-colors">
+                                <i class="fa fa-youtube-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-2xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold text-dark mb-6">发送消息</h3>
+                        <form>
+                            <div class="mb-4">
+                                <label for="name" class="block text-gray-700 font-medium mb-2">姓名</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的姓名">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 font-medium mb-2">邮箱</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的邮箱">
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="message" class="block text-gray-700 font-medium mb-2">消息</label>
+                                <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的消息"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                                发送消息 <i class="fa fa-paper-plane ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+ <!-- 团队介绍 -->
+    <section class="section-padding bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-4">核心团队</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    由三名本科生组成的研发团队，致力于智能厨房设备的创新与发展
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-64">
+                        <img src="https://picsum.photos/id/1005/400/300" alt="曲泉屹" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-dark mb-1">曲泉屹</h3>
+                        <p class="text-primary mb-3">项目负责人</p>
+                        <p class="text-gray-600 mb-4">
+                            
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-64">
+                        <img src="https://picsum.photos/id/1011/400/300" alt="张晨爽" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-dark mb-1">张晨爽</h3>
+                        <p class="text-primary mb-3">硬件设计主管</p>
+                        <p class="text-gray-600 mb-4">
+                            专注于精密机械设计与制造，在厨房设备结构优化方面有深厚造诣。
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="h-64">
+                        <img src="https://picsum.photos/id/1027/400/300" alt="夏先晟" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-dark mb-1"></h3><!--name-->
+                        <p class="text-primary mb-3"></p><!--职位-->
+                        <p class="text-gray-600 mb-4">
+                            
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fa fa-cutlery text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">智能切菜机器人</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        致力于通过科技创新，为现代家庭和餐饮行业提供智能、高效、安全的切菜解决方案。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">快速链接</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#overview" class="text-gray-400 hover:text-primary transition-colors">项目概述</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-primary transition-colors">机器人特点</a></li>
+                        <li><a href="#demo" class="text-gray-400 hover:text-primary transition-colors">功能演示</a></li>
+                        <li><a href="#plan" class="text-gray-400 hover:text-primary transition-colors">后续计划</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-primary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">项目团队</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">核心成员</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">研发进展</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">技术文档</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">专利信息</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">合作伙伴</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">订阅更新</h4>
+                    <p class="text-gray-400 mb-4">
+                        订阅我们的新闻通讯，获取项目最新进展和技术更新。
+                    </p>
+                    <form class="mb-4">
+                        <div class="flex">
+                            <input type="email" placeholder="您的邮箱地址" class="flex-1 px-4 py-2 rounded-l-lg focus:outline-none text-dark">
+                            <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-r-lg transition-colors">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-gray-500 text-sm">
+                        我们尊重您的                        隐私，不会向第三方分享您的信息。
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                        &copy; 2025 智能切菜机器人项目组. 保留所有权利.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm transition-colors">隐私政策</a>
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm transition-colors">使用条款</a>
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm transition-colors">Cookie政策</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('bg-white/90');
+                navbar.classList.add('bg-white');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('bg-white/90');
+                navbar.classList.remove('bg-white');
+            }
+        });
+        
+        // 移动端菜单切换
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuToggle.innerHTML = '<i class="fa fa-bars text-2xl"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fa fa-times text-2xl"></i>';
+            }
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动端菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuToggle.innerHTML = '<i class="fa fa-bars text-2xl"></i>';
+                    }
+                }
+            });
+        });
+        
+        // 返回顶部按钮
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 食材识别图表
+        window.addEventListener('load', () => {
+            const ctx = document.getElementById('detectionChart').getContext('2d');
+            const detectionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['训练轮次 0', '训练轮次 50', '训练轮次 100'],
+                    datasets: [
+                        {
+                            label: '精确率',
+                            data: [0.6, 0.85, 0.92],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '召回率',
+                            data: [0.55, 0.82, 0.90],
+                            borderColor: '#36CFC9',
+                            backgroundColor: 'rgba(54, 207, 201, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '蓝莓成熟度识别模型训练结果'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            ticks: {
+                                stepSize: 0.1
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        
+        // 动画滚动显示
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.card-hover, .section-padding > div > div > h2, table, form');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('opacity-100', 'translate-y-0');
+                    element.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        };
+        
+        // 初始化元素动画状态
+        document.querySelectorAll('.card-hover, .section-padding > div > div > h2, table, form').forEach(element => {
+            element.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+        });
+        
+        // 初始调用和滚动时调用
+        animateOnScroll();
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>
